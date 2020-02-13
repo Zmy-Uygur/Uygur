@@ -1,13 +1,8 @@
 import os
 import random
-
 from PIL import Image, ImageFilter
 
 from computer_text_generator import ComputerTextGenerator
-try:
-    from handwritten_text_generator import HandwrittenTextGenerator
-except ImportError as e:
-    print('Missing modules for handwritten text generation.')
 from background_generator import BackgroundGenerator
 from distorsion_generator import DistorsionGenerator
 
@@ -35,11 +30,7 @@ class FakeTextDataGenerator(object):
         ##########################
         # Create picture of text #
         ##########################
-        if is_handwritten:
-            if orientation == 1:
-                raise ValueError("Vertical handwritten text is unavailable")
-            image = HandwrittenTextGenerator.generate(text)
-        else:
+        if not is_handwritten:
             image = ComputerTextGenerator.generate(text, font, text_color, size, orientation, space_width)
 
         random_angle = random.randint(0-skewing_angle, skewing_angle)
