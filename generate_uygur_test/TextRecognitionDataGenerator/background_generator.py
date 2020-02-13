@@ -3,7 +3,6 @@ import math
 import os
 import random
 import numpy as np
-
 from PIL import Image, ImageDraw, ImageFilter
 
 
@@ -62,10 +61,10 @@ class BackgroundGenerator(object):
             Create a background with a picture
         """
 
-        pictures = os.listdir('./pictures')
+        pictures = os.listdir('./bg_images')
 
         if len(pictures) > 0:
-            picture = Image.open('./pictures/' + pictures[random.randint(0, len(pictures) - 1)])
+            picture = Image.open('./bg_images/' + pictures[random.randint(0, len(pictures) - 1)])
 
             if picture.size[0] < width:
                 picture = picture.resize([width, int(picture.size[1] * (width / picture.size[0]))], Image.ANTIALIAS)
@@ -81,13 +80,6 @@ class BackgroundGenerator(object):
             else:
                 y = random.randint(0, picture.size[1] - height)
 
-            return picture.crop(
-                (
-                    x,
-                    y,
-                    x + width,
-                    y + height,
-                )
-            )
+            return picture.crop((x, y, x + width, y + height,))
         else:
-            raise Exception('No images where found in the pictures folder!')
+            raise Exception('No images where found in the bg_images folder!')
