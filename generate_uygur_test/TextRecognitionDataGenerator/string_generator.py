@@ -17,8 +17,12 @@ def create_strings_from_file(filename, count, lang):
     """
     strings = []
 
-    with open('dicts/' + filename, 'r', encoding="utf8") as f:
-        lines = [l.strip()[0:200] for l in f.readlines()]
+    with open('dicts/' + filename, 'r', encoding="utf-8-sig") as f:
+        lines = []
+        for l in f.readlines():
+            lines.append(l.strip()[0:50])
+        while '' in lines:
+            lines.remove('')
         if len(lines) == 0:
             raise Exception("No lines could be read in file")
         while len(strings) < count:
