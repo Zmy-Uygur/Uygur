@@ -2,6 +2,13 @@ import random
 from PIL import Image, ImageColor, ImageFont, ImageDraw, ImageFilter
 
 
+def randomcolor():
+    colorArr = ['1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F']
+    color = ""
+    for i in range(6):
+        color += colorArr[random.randint(0, 14)]
+    return "#" + color
+
 class ComputerTextGenerator(object):
     @classmethod
     def generate(cls, text, font, text_color, font_size, orientation, space_width):
@@ -28,7 +35,12 @@ class ComputerTextGenerator(object):
 
         txt_draw = ImageDraw.Draw(txt_img)
 
-        colors = [ImageColor.getrgb(c) for c in text_color.split(',')]
+        if text_color:
+            color_def = randomcolor()
+        else:
+            color_def = "#282828"
+
+        colors = [ImageColor.getrgb(c) for c in color_def.split(',')]
         c1, c2 = colors[0], colors[-1]
 
         fill = (random.randint(c1[0], c2[0]),
@@ -67,3 +79,5 @@ class ComputerTextGenerator(object):
             txt_draw.text((0, sum(char_heights[0:i])), c, fill=fill, font=image_font)
 
         return txt_img
+
+
