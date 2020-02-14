@@ -25,20 +25,20 @@ def parse_arguments():
                         type=str,
                         nargs="?",
                         help="When set, this argument uses a specified text file as source for the text",
-                        default="test.txt")
+                        default="sahardike nikah.txt")
 
     parser.add_argument("-l",
                         "--language",
                         type=str,
                         nargs="?",
                         help="The language to use, should be fr (French), en (English), es (Spanish), de (German), or cn (Chinese).",
-                        default="fa")
+                        default="uygur")
     parser.add_argument("-c",
                         "--count",
                         type=int,
                         nargs="?",
                         help="The number of images to be created.",
-                        default=10)
+                        default=1000)
     parser.add_argument("-w",
                         "--length",
                         type=int,
@@ -145,15 +145,15 @@ def parse_arguments():
                         "--text_color",
                         type=str,
                         nargs="?",
-                        help="Define the text's color, should be either a single hex color or a range in the ?,? format.",
-                        default='#282828')
+                        help="Define the text's color, True:random, False:.",
+                        default=True)
     # 单词之间空格的宽度
     parser.add_argument("-sw",
                         "--space_width",
                         type=float,
                         nargs="?",
                         help="Define the width of the spaces between words. 2.0 means twice the normal space width",
-                        default=0.8)
+                        default=round(random.uniform(0.8, 1.2), 2))
 
     return parser.parse_args()
 
