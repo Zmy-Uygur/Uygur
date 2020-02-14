@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import os
 import random
 from PIL import Image, ImageFilter
@@ -31,35 +32,36 @@ class FakeTextDataGenerator(object):
         # Create picture of text #
         ##########################
         if not is_handwritten:
+            size = random.randint(size, size + 40)
             image = ComputerTextGenerator.generate(text, font, text_color, size, orientation, space_width)
 
-        random_angle = random.randint(0-skewing_angle, skewing_angle)
+        random_angle = random.uniform(0-skewing_angle, skewing_angle)
 
-        rotated_img = image.rotate(skewing_angle if not random_skew else random_angle, expand=1)
+        distorted_img = image.rotate(skewing_angle if not random_skew else random_angle, expand=1)
 
-        #############################
-        # Apply distorsion to image #
-        #############################
-        if distorsion_type == 0:
-            distorted_img = rotated_img # Mind = blown
-        elif distorsion_type == 1:
-            distorted_img = DistorsionGenerator.sin(
-                rotated_img,
-                vertical=(distorsion_orientation == 0 or distorsion_orientation == 2),
-                horizontal=(distorsion_orientation == 1 or distorsion_orientation == 2)
-            )
-        elif distorsion_type == 2:
-            distorted_img = DistorsionGenerator.cos(
-                rotated_img,
-                vertical=(distorsion_orientation == 0 or distorsion_orientation == 2),
-                horizontal=(distorsion_orientation == 1 or distorsion_orientation == 2)
-            )
-        else:
-            distorted_img = DistorsionGenerator.random(
-                rotated_img,
-                vertical=(distorsion_orientation == 0 or distorsion_orientation == 2),
-                horizontal=(distorsion_orientation == 1 or distorsion_orientation == 2)
-            )
+        # #############################
+        # # Apply distorsion to image #
+        # #############################
+        # if distorsion_type == 0:
+        #     distorted_img = rotated_img # Mind = blown
+        # elif distorsion_type == 1:
+        #     distorted_img = DistorsionGenerator.sin(
+        #         rotated_img,
+        #         vertical=(distorsion_orientation == 0 or distorsion_orientation == 2),
+        #         horizontal=(distorsion_orientation == 1 or distorsion_orientation == 2)
+        #     )
+        # elif distorsion_type == 2:
+        #     distorted_img = DistorsionGenerator.cos(
+        #         rotated_img,
+        #         vertical=(distorsion_orientation == 0 or distorsion_orientation == 2),
+        #         horizontal=(distorsion_orientation == 1 or distorsion_orientation == 2)
+        #     )
+        # else:
+        #     distorted_img = DistorsionGenerator.random(
+        #         rotated_img,
+        #         vertical=(distorsion_orientation == 0 or distorsion_orientation == 2),
+        #         horizontal=(distorsion_orientation == 1 or distorsion_orientation == 2)
+        #     )
 
         ##################################
         # Resize image to desired format #
@@ -83,14 +85,23 @@ class FakeTextDataGenerator(object):
         #############################
         # Generate background image #
         #############################
-        if background_type == 0:
-            background = BackgroundGenerator.gaussian_noise(background_height, background_width)
-        elif background_type == 1:
-            background = BackgroundGenerator.plain_white(background_height, background_width)
-        elif background_type == 2:
-            background = BackgroundGenerator.quasicrystal(background_height, background_width)
-        else:
-            background = BackgroundGenerator.picture(background_height, background_width)
+        Picture = True
+        while Picture == True:
+            try:
+                if background_type == 0:
+                    background = BackgroundGenerator.gaussian_noise(background_height, background_width)
+                elif background_type == 1:
+                    background = BackgroundGenerator.plain_white(background_height, background_width)
+                elif background_type == 2:
+                    background = BackgroundGenerator.quasicrystal(background_height, background_width)
+                else:
+                    background = BackgroundGenerator.picture(background_height, background_width)
+            except:
+                Picture = True
+                raise ValueError("Picture Error, Continue!")
+            else:
+                Picture = False
+
 
         #############################
         # Place text with alignment #
