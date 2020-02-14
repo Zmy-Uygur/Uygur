@@ -81,3 +81,4 @@ class DistorsionGenerator(object):
         max_offset = int(image.height ** 0.4)
 
         return cls.apply_func_distorsion(image, vertical, horizontal, max_offset, (lambda x: random.randint(0, max_offset)))
+
