@@ -22,6 +22,7 @@ class ComputerTextGenerator(object):
 
     @classmethod
     def __generate_horizontal_text(cls, text, font, text_color, font_size, space_width):
+        space_width = round(random.uniform(0.8, 1.2), space_width)
         # 设置字体，字间，颜色，尺寸
         image_font = ImageFont.truetype(font=font, size=font_size)
         words = text.split(' ')
@@ -50,7 +51,7 @@ class ComputerTextGenerator(object):
         for i, w in enumerate(words):
             txt_draw.text((sum(words_width[0:i]) + i * int(space_width), 0), w, fill=fill, font=image_font)
 
-        return txt_img
+        return txt_img, fill
 
     @classmethod
     def __generate_vertical_text(cls, text, font, text_color, font_size, space_width):
@@ -78,6 +79,6 @@ class ComputerTextGenerator(object):
         for i, c in enumerate(text):
             txt_draw.text((0, sum(char_heights[0:i])), c, fill=fill, font=image_font)
 
-        return txt_img
+        return txt_img, fill
 
 
