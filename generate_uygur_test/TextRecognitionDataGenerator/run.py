@@ -81,7 +81,7 @@ def parse_arguments():
                         type=int,
                         nargs="?",
                         help="Apply gaussian blur to the resulting sample. Should be an integer defining the blur radius",
-                        default=1)
+                        default=2)
     parser.add_argument("-rbl",
                         "--random_blur",
                         action="store_true",
@@ -94,6 +94,12 @@ def parse_arguments():
                         nargs="?",
                         help="Define what kind of background to use. 0: Gaussian Noise, 1: Plain white, 2: Quasicrystal, 3: Pictures",
                         default=3)
+    parser.add_argument("-bt",
+                        "--background_type",
+                        type=int,
+                        nargs="?",
+                        help="",
+                        default=0)
     parser.add_argument("-hw",
                         "--handwritten",
                         action="store_true",
@@ -204,6 +210,7 @@ def main():
                 [args.blur] * string_count,
                 [args.random_blur] * string_count,
                 [args.background] * string_count,
+                [args.background_type] * string_count,
                 [args.distorsion] * string_count,
                 [args.distorsion_orientation] * string_count,
                 [args.handwritten] * string_count,
