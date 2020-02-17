@@ -6,9 +6,12 @@ import numpy as np
 from PIL import Image, ImageDraw, ImageFilter
 
 
+def choose_picture(pictures):
+    return Image.open('./bg_images/' + pictures[random.randint(0, len(pictures) - 1)])
+
 class BackgroundGenerator(object):
     @classmethod
-    def gaussian_noise(cls, height, width):
+    def gaussian_noise(cls, height, width, text_color):
         """
             Create a background with Gaussian noise (to mimic paper)
         """
@@ -64,7 +67,7 @@ class BackgroundGenerator(object):
         pictures = os.listdir('./bg_images')
 
         if len(pictures) > 0:
-            picture = Image.open('./bg_images/' + pictures[random.randint(0, len(pictures) - 1)])
+            picture = choose_picture(pictures)
 
             if picture.size[0] < width:
                 picture = picture.resize([width, int(picture.size[1] * (width / picture.size[0]))], Image.ANTIALIAS)
@@ -77,7 +80,10 @@ class BackgroundGenerator(object):
                 x = random.randint(0, picture.size[0] - width)
             if (picture.size[1] == height):
                 y = 0
+            elif picture.size[1] < height:
+                return 'ERROR'
             else:
+                # print(picture.size, width, height)
                 y = random.randint(0, picture.size[1] - height)
 
             return picture.crop((x, y, x + width, y + height,))
