@@ -10,6 +10,9 @@ from distorsion_generator import DistorsionGenerator
 from bidi.algorithm import get_display
 import arabic_reshaper
 
+import cv2
+import numpy as np
+
 def make_farsi_text(x):
     reshaped_text = arabic_reshaper.reshape(x)
     farsi_text = get_display(reshaped_text)
@@ -25,7 +28,9 @@ class FakeTextDataGenerator(object):
         cls.generate(*t)
 
     @classmethod
-    def generate(cls, index, text, font, out_dir, size, extension, skewing_angle, random_skew, blur, random_blur, background_type, distorsion_type, distorsion_orientation, is_handwritten, name_format, width, alignment, text_color, orientation, space_width):
+    def generate(cls, index, text, font, out_dir, size, extension, skewing_angle, random_skew, blur, random_blur,
+                 background_appoint, background_type, distorsion_type, distorsion_orientation, is_handwritten, name_format,
+                 width, alignment, text_color, orientation, space_width):
         image = None
 
         ##########################
@@ -33,35 +38,35 @@ class FakeTextDataGenerator(object):
         ##########################
         if not is_handwritten:
             size = random.randint(size, size + 40)
-            image = ComputerTextGenerator.generate(text, font, text_color, size, orientation, space_width)
+            image, text_color = ComputerTextGenerator.generate(text, font, text_color, size, orientation, space_width)
 
         random_angle = random.uniform(0-skewing_angle, skewing_angle)
 
-        distorted_img = image.rotate(skewing_angle if not random_skew else random_angle, expand=1)
+        rotated_img = image.rotate(skewing_angle if not random_skew else random_angle, expand=1)
 
-        # #############################
-        # # Apply distorsion to image #
-        # #############################
-        # if distorsion_type == 0:
-        #     distorted_img = rotated_img # Mind = blown
-        # elif distorsion_type == 1:
-        #     distorted_img = DistorsionGenerator.sin(
-        #         rotated_img,
-        #         vertical=(distorsion_orientation == 0 or distorsion_orientation == 2),
-        #         horizontal=(distorsion_orientation == 1 or distorsion_orientation == 2)
-        #     )
-        # elif distorsion_type == 2:
-        #     distorted_img = DistorsionGenerator.cos(
-        #         rotated_img,
-        #         vertical=(distorsion_orientation == 0 or distorsion_orientation == 2),
-        #         horizontal=(distorsion_orientation == 1 or distorsion_orientation == 2)
-        #     )
-        # else:
-        #     distorted_img = DistorsionGenerator.random(
-        #         rotated_img,
-        #         vertical=(distorsion_orientation == 0 or distorsion_orientation == 2),
-        #         horizontal=(distorsion_orientation == 1 or distorsion_orientation == 2)
-        #     )
+        #############################
+        # Apply distorsion to image #
+        #############################
+        if distorsion_type == 0:
+            distorted_img = rotated_img # Mind = blown
+        elif distorsion_type == 1:
+            distorted_img = DistorsionGenerator.sin(
+                rotated_img,
+                vertical=(distorsion_orientation == 0 or distorsion_orientation == 2),
+                horizontal=(distorsion_orientation == 1 or distorsion_orientation == 2)
+            )
+        elif distorsion_type == 2:
+            distorted_img = DistorsionGenerator.cos(
+                rotated_img,
+                vertical=(distorsion_orientation == 0 or distorsion_orientation == 2),
+                horizontal=(distorsion_orientation == 1 or distorsion_orientation == 2)
+            )
+        else:
+            distorted_img = DistorsionGenerator.random(
+                rotated_img,
+                vertical=(distorsion_orientation == 0 or distorsion_orientation == 2),
+                horizontal=(distorsion_orientation == 1 or distorsion_orientation == 2)
+            )
 
         ##################################
         # Resize image to desired format #
@@ -85,23 +90,32 @@ class FakeTextDataGenerator(object):
         #############################
         # Generate background image #
         #############################
-        Picture = True
-        while Picture == True:
-            try:
-                if background_type == 0:
+        try:
+            if background_type == 0:
+                type = random.randint(0, 3)
+                if type == 0:
                     background = BackgroundGenerator.gaussian_noise(background_height, background_width)
-                elif background_type == 1:
+                elif type == 1:
                     background = BackgroundGenerator.plain_white(background_height, background_width)
-                elif background_type == 2:
+                elif type == 2:
                     background = BackgroundGenerator.quasicrystal(background_height, background_width)
-                else:
+                elif type == 3:
                     background = BackgroundGenerator.picture(background_height, background_width)
-            except:
-                Picture = True
-                raise ValueError("Picture Error, Continue!")
             else:
-                Picture = False
+                background = BackgroundGenerator.picture(background_height, background_width)
+        except:
+            raise ValueError("Picture Error, Continue!")
 
+        if background == 'ERROR':
+            background = BackgroundGenerator.plain_white(background_height, background_width, text_color)
+
+        # num_colors = 1
+        #
+        # small_image = image.resize((image.size))
+        # result = small_image.convert('P', palette=Image.ADAPTIVE, colors=num_colors)  # image with 5 dominating colors
+        #
+        # result = result.convert('RGB')
+        # main_colors = result.getcolors(image.width * image.height)
 
         #############################
         # Place text with alignment #
@@ -119,7 +133,6 @@ class FakeTextDataGenerator(object):
         ##################################
         # Apply gaussian blur #
         ##################################
-
         final_image = background.filter(
             ImageFilter.GaussianBlur(
                 radius=(blur if not random_blur else random.randint(0, blur))
@@ -140,6 +153,10 @@ class FakeTextDataGenerator(object):
         else:
             print('{} is not a valid name format. Using default.'.format(name_format))
             image_name = '{}_{}.{}'.format(text, str(index), extension)
+
+
+
+
 
         # Save the image
         final_image.convert('RGB').save(os.path.join(out_dir, image_name))
