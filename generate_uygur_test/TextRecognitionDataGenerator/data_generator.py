@@ -37,7 +37,7 @@ class FakeTextDataGenerator(object):
         # Create picture of text #
         ##########################
         if not is_handwritten:
-            size = random.randint(size, size + 40)
+            size = random.randint(size, size + 100)
             image, text_color = ComputerTextGenerator.generate(text, font, text_color, size, orientation, space_width)
 
         random_angle = random.uniform(0-skewing_angle, skewing_angle)
@@ -92,14 +92,14 @@ class FakeTextDataGenerator(object):
         #############################
         try:
             if background_type == 0:
-                type = random.randint(0, 3)
+                type = random.randint(0, 2)
                 if type == 0:
                     background = BackgroundGenerator.gaussian_noise(background_height, background_width)
                 elif type == 1:
                     background = BackgroundGenerator.plain_white(background_height, background_width)
+                #elif type == 2:
+                #    background = BackgroundGenerator.quasicrystal(background_height, background_width)
                 elif type == 2:
-                    background = BackgroundGenerator.quasicrystal(background_height, background_width)
-                elif type == 3:
                     background = BackgroundGenerator.picture(background_height, background_width)
             else:
                 background = BackgroundGenerator.picture(background_height, background_width)
@@ -107,7 +107,7 @@ class FakeTextDataGenerator(object):
             raise ValueError("Picture Error, Continue!")
 
         if background == 'ERROR':
-            background = BackgroundGenerator.plain_white(background_height, background_width, text_color)
+            background = BackgroundGenerator.plain_white(background_height, background_width)
 
         # num_colors = 1
         #
