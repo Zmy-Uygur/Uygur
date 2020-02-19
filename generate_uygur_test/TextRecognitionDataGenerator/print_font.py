@@ -6,12 +6,14 @@ import random
 from bidi.algorithm import get_display
 import arabic_reshaper
 
-font_dir = r'./fonts/uygur'
-out_dir = r'fonts_test'
+font_dir = r'./fonts/uygur1'
+out_dir = r'fonts_test4'
 
 # 常用字
 char1 = "خ ج چ ك ڭ گ ي ل ا ە و ۈ ۇ ۆ ى ې ؟ ! ، . > < _ - |"
 char2 = "ئا ئە ئو ئۈ ئۇ ئۆ ئى ئې د ر ز ۋ ژ ن ت پ م غ س ش ف ق"
+char3 = "ﺟﻪﮬﻪﺗﻠﻪﺭﺩﯨﻦ ﻗﻮﻟﯩﺪﯨﻦ ﻛﯩﻠﯩﺸﯩﭽﻪ ﻳﺎﺭﺩﯨﻤﯩﻨﻰ ﺋﺎﻳﯩﻤﺎﻱ ﻗﯩﻠﺪﯨﻐﺎﻥ ﺳﯩﺨﻴﻠﯩﻘﻰ"
+char4 = "ﺳﯜﺯﮔﯜﭼﻤﯘ» ﺩﻩﭖ ﻗﯩﻠﻐﺎﻥ ﺗﯘﺗﯘﯞﺍﻟﻐﺎﻥ ﺋﻮﻣﺎﻗﻘﯩﻨﻪ ﭼﺎﻗﭽﯩﻘﻰ ﺑﯩﻠﻪﻥ ﺋﺎﻧﺪﯨﻦ "
 #char_list2 = "ئا ئە ئو ئۈ ئۇ ئۆ ئى ئې د ر ز ۋ ژ ن ت پ م غ س ش ف ق خ ج چ ك ڭ گ ي ل ا ە و ۈ ۇ ۆ ى ې"
 
 
@@ -28,11 +30,11 @@ if not os.path.exists(out_dir):
 font_files = os.listdir(font_dir)
 
 for font_file in tqdm(font_files):
-    space_width = 1
+    space_width = 0
     f_path = os.path.join(font_dir, font_file)
     # 设置字体，字间，颜色，尺寸
     image_font = ImageFont.truetype(font=f_path, size=40)
-    words = make_farsi_text(char2)
+    words = make_farsi_text(char4)
     print(words)
     space_width = image_font.getsize(' ')[0] * space_width
 
@@ -40,7 +42,7 @@ for font_file in tqdm(font_files):
     text_width = sum(words_width) + int(space_width) * (len(words) - 1)
     text_height = max([image_font.getsize(w)[1] for w in words])
 
-    txt_img = Image.new('RGB', (text_width, text_height), (0, 0, 0))
+    txt_img = Image.new('RGB', (text_width, text_height), (255, 255, 255))
 
     txt_draw = ImageDraw.Draw(txt_img)
 
