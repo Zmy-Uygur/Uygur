@@ -32,7 +32,7 @@ def parse_arguments():
                         type=str,
                         nargs="?",
                         help="The language to use, should be fr (French), en (English), es (Spanish), de (German), or cn (Chinese).",
-                        default="uygur")
+                        default="uygur1")
     parser.add_argument("-c",
                         "--count",
                         type=int,
@@ -69,7 +69,7 @@ def parse_arguments():
                         type=int,
                         nargs="?",
                         help="Define skewing angle of the generated text. In positive degrees",
-                        default=5)
+                        default=3)
     # 倾斜角度是否在+-skew_angle间随机变化
     parser.add_argument("-rk",
                         "--random_skew",
@@ -81,7 +81,7 @@ def parse_arguments():
                         type=int,
                         nargs="?",
                         help="Apply gaussian blur to the resulting sample. Should be an integer defining the blur radius",
-                        default=2)
+                        default=0)
     parser.add_argument("-rbl",
                         "--random_blur",
                         action="store_true",
@@ -159,7 +159,7 @@ def parse_arguments():
                         type=float,
                         nargs="?",
                         help="Define the width of the spaces between words. 2.0 means twice the normal space width",
-                        default=round(random.uniform(0.8, 1.2), 2))
+                        default=2)
 
     return parser.parse_args()
 
@@ -193,8 +193,9 @@ def main():
     strings = []
     if args.input_file != '':
         strings = create_strings_from_file(args.input_file, args.count, args.language)
+    print(strings)
     string_count = len(strings)
-    # 多线程，进度条提示信息
+    # 线程
     p = Pool(args.thread_count)
     for _ in tqdm(p.imap_unordered(
             FakeTextDataGenerator.generate_from_tuple,  ## FakeTextDataGenerator样本生成主干部分
