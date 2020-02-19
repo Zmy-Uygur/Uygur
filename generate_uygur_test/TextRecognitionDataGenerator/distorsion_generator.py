@@ -77,8 +77,7 @@ class DistorsionGenerator(object):
         """
             Apply a random distorsion on one or both of the specified axis
         """
-
-        max_offset = int(image.height ** 0.4)
+        rate = round(random.uniform(0.01, 0.3), 2)
+        max_offset = int(image.height ** rate)
 
         return cls.apply_func_distorsion(image, vertical, horizontal, max_offset, (lambda x: random.randint(0, max_offset)))
-
